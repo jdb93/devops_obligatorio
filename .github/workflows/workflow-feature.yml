@@ -12,4 +12,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Display test message
-      run: echo "Workflow for Feature branches executed"
+        run: echo "Workflow for Feature branches executed"
