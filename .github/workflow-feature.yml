@@ -1,0 +1,15 @@
+name: Github Action Workflow for Feature branches
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  test-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display test message
+      run: echo "Workflow for Feature branches executed"
