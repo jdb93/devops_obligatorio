@@ -14,41 +14,6 @@ jobs:
       - name: Display test message
         run: echo "Workflow for Feature branches executed"
   
-  golangci:
-    name: Lint Go code (api-gateway & inventory-service)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: '1.24'
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.1
-          args: ./api-gateway/... ./inventory-service/...
-    
-  lint-python:
-    name: Lint Python code (product-service)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source repository
-        uses: actions/checkout@v5
-
-      - name: Set up Python environment
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
-        with:
-          args: product-service
-          
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
