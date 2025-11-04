@@ -1,0 +1,19 @@
+name: Github Action Workflow for merging staging to main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display merge message
+        run: echo "Code has been merged from staging to main"
+
+# Jobs to add:
+# build (para confirmar integridad)
+# sonarcloud analysis
+# install aws cli
+# deploy con terraform

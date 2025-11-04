@@ -1,0 +1,18 @@
+name: Github Action Workflow for merging to develop
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display merge message
+        run: echo "Code has been merged into develop branch"
+
+# Jobs to add:
+# instalar dependencias para ver que este todo bien
+# tests con postman
+# build - Detectar errores de build antes del deploy a staging.
