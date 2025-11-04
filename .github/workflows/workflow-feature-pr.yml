@@ -30,9 +30,7 @@ jobs:
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.1
-          args: |
-            ./api-gateway/...
-            ./inventory-service/...
+          args: ./api-gateway/... ./inventory-service/...
     
   lint-python:
     name: Lint Python code (product-service)
