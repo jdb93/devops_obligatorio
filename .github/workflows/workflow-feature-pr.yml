@@ -25,26 +25,56 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          
-  postman-tests:
-    name: Run Postman Newman Tests
-    runs-on: ubuntu-latest
-    needs: [test-command]   # si querés que espere a otro job, opcional
-    steps:
-      - uses: actions/checkout@v4
 
-      # Instalar Node.js (se necesita para Newman)
+
+  postman-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      # Instalar Newman
       - name: Install Newman
         run: npm install -g newman
 
-      # Ejecutar tests con Newman
-      - name: Run Newman tests
+      - name: Start Docker services
+        run: docker compose up -d --build
+
+      - name: Wait for Product Service to be ready
+        run: |
+          echo "Waiting for Product Service..."
+          for i in {1..20}; do
+            if curl -s http://localhost:8001/health >/dev/null; then
+              echo "Product Service is up!"
+              exit 0
+            fi
+            echo "Retrying in 3 seconds..."
+            sleep 3
+          done
+          echo "Product Service failed to start"
+          docker compose logs product_service
+          exit 1
+
+      - name: Wait for Inventory Service to be ready
+        run: |
+          echo "Waiting for Inventory Service..."
+          for i in {1..20}; do
+            if curl -s http://localhost:8002/health >/dev/null; then
+              echo "Inventory Service is up!"
+              exit 0
+            fi
+            echo "Retrying in 3 seconds..."
+            sleep 3
+          done
+          echo "Inventory Service failed to start"
+          docker compose logs inventory_service
+          exit 1
+
+      - name: Run Postman Tests
         run: |
           newman run postman/StockWiz.postman_collection.json \
             -e postman/StockWiz.postman_environment.json
