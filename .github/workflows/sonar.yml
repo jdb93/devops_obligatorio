@@ -2,6 +2,10 @@ name: SonarQube Scan
 
 on:
   workflow_call:
+    inputs:
+      SONAR_TOKEN:
+        required: true
+        type: string
 
 jobs:
   sonarqube:
@@ -11,7 +15,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 
+          
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ inputs.SONAR_TOKEN }}

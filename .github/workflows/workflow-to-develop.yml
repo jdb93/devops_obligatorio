@@ -14,6 +14,8 @@ jobs:
 
   sonar:
     uses: ./.github/workflows/sonar.yml
+    with:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   postman-tests:
     uses: ./.github/workflows/postman-tests.yml
