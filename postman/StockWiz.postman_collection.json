@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "01a38abf-9f1a-49d5-a8c7-8cdaad331b6b",
+		"name": "StockWiz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7372635"
+	},
+	"item": [
+		{
+			"name": "Product Service",
+			"item": [
+				{
+					"name": "Product Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Inventory Health Check\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_product}}/health",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Add Product\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_product}}/products",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Has expected fields\", function () {\r",
+									"    const body = pm.response.json();\r",
+									"    pm.expect(body).to.have.property(\"id\");\r",
+									"    pm.expect(body).to.have.property(\"name\");\r",
+									"    pm.expect(body).to.have.property(\"price\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Create Inventory\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_product}}/products/{{created_product_id}}",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"products",
+								"{{created_product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product created contains id\", function () {\r",
+									"    const data = pm.response.json();\r",
+									"    pm.expect(data).to.have.property(\"id\");\r",
+									"    pm.environment.set(\"created_product_id\", data.id);\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Product by ID\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Laptop Gamer\",\r\n  \"description\": \"Equipo con GPU\",\r\n  \"price\": 1999.99,\r\n  \"category\": \"electronics\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_product}}/products",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product updated\", function () {\r",
+									"    let b = pm.response.json();\r",
+									"    pm.expect(b).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Delete Product\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"price\": 1899.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_product}}/products/{{created_product_id}}",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"products",
+								"{{created_product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 or 204\", function () {\r",
+									"    pm.expect([200,204]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(null);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_product}}/products/{{created_product_id}}",
+							"host": [
+								"{{base_url_product}}"
+							],
+							"path": [
+								"products",
+								"{{created_product_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory Service",
+			"item": [
+				{
+					"name": "Inventory Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"List Products\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_inventory}}/health",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Array of inventory items\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Inventory By Id\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inventory By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Has expected fields\", function () {\r",
+									"    const body = pm.response.json();\r",
+									"    pm.expect(body).to.have.property(\"id\");\r",
+									"    pm.expect(body).to.have.property(\"product_id\");\r",
+									"    pm.expect(body).to.have.property(\"quantity\");\r",
+									"    pm.expect(body).to.have.property(\"warehouse\");\r",
+									"    pm.expect(body).to.have.property(\"last_updated\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Update Inventory\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory/{{created_inventory_id}}",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory",
+								"{{created_inventory_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inventory By Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Has expected fields\", function () {\r",
+									"    const body = pm.response.json();\r",
+									"    pm.expect(body).to.have.property(\"id\");\r",
+									"    pm.expect(body).to.have.property(\"product_id\");\r",
+									"    pm.expect(body).to.have.property(\"quantity\");\r",
+									"    pm.expect(body).to.have.property(\"warehouse\");\r",
+									"    pm.expect(body).to.have.property(\"last_updated\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Inventory By Id\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory/product/{{created_product_id}}",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory",
+								"product",
+								"{{created_product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Inventory item has product_id and quantity\", function () {\r",
+									"    let body = pm.response.json();\r",
+									"    pm.expect(body).to.have.property(\"product_id\");\r",
+									"    pm.expect(body).to.have.property(\"quantity\");\r",
+									"    pm.environment.set(\"created_inventory_id\", body.id);\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"List Inventory\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"product_id\": {{created_product_id}},\r\n  \"quantity\": 50,\r\n  \"warehouse\": \"central\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Inventory updated\", function () {\r",
+									"    let b = pm.response.json();\r",
+									"    pm.expect(b).to.have.property(\"last_updated\");\r",
+									"});\r",
+									"\r",
+									"pm.execution.setNextRequest(\"Delete Inventory\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 120\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory/{{created_inventory_id}}",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory",
+								"{{created_inventory_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.execution.setNextRequest(\"Update Product\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_inventory}}/inventory/{{created_inventory_id}}",
+							"host": [
+								"{{base_url_inventory}}"
+							],
+							"path": [
+								"inventory",
+								"{{created_inventory_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
