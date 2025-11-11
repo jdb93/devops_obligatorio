@@ -25,6 +25,29 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+  postman-tests:
+    name: Run Postman Newman Tests
+    runs-on: ubuntu-latest
+    needs: [test-command]   # si querés que espere a otro job, opcional
+    steps:
+      - uses: actions/checkout@v4
+
+      # Instalar Node.js (se necesita para Newman)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Instalar Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Ejecutar tests con Newman
+      - name: Run Newman tests
+        run: |
+          newman run postman/StockWiz.postman_collection.json \
+            -e postman/StockWiz.postman_environment.json
 
 # Jobs to add:
 # tests con postman
