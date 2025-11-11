@@ -4,17 +4,14 @@ on:
   workflow_call:
 
 jobs:
-  sonar:
+  sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectKey: jdb93_devops_obligatorio
-          organization: jdb93
