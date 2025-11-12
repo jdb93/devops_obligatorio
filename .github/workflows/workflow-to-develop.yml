@@ -1,0 +1,24 @@
+name: Workflow for Feature branches to develop
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  banner:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PR to DEVELOP"
+
+  sonar:
+    uses: ./.github/workflows/sonar.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  postman-tests:
+    uses: ./.github/workflows/postman-tests.yml
+    with:
+      collection_path: postman/StockWiz.postman_collection.json
+      environment_path: postman/StockWiz.postman_environment.json
