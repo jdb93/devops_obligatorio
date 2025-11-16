@@ -4,8 +4,8 @@ variable "vpc_cidr_block" {
 }
 
 variable "public_subnet_cidrs" {
-    description = "List of CIDR blocks for public subnets."
-    type        = list(string)
+  description = "List of CIDR blocks for public subnets."
+  type        = list(string)
 }
 
 variable "private_subnet_cidrs" {
@@ -23,4 +23,9 @@ variable "tags" {
   description = "Tags to apply to networking resources."
   type        = map(string)
   default     = {}
+}
+
+variable "environment" {
+  description = "Environment name"
+  type        = string
 }
