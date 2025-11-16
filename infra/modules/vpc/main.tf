@@ -3,7 +3,6 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  # Tags base que van a TODOS los recursos de red
   common_tags = merge(
     {
       Project     = "stockwiz"
