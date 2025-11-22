@@ -4,3 +4,6 @@
 *.tfstate
 *.tfstate.*
 crash.log
+# Archivos específicos de macOS
+.DS_Store
+**/.DS_Store
