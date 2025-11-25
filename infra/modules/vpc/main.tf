@@ -1,117 +1,113 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
+data "aws_availability_zones" "available" {}
 
-locals {
-  common_tags = merge(
-    {
-      Project     = "stockwiz"
-      Environment = var.environment
-    },
-    var.tags
-  )
-}
-
+##########################
+# VPC
+##########################
 resource "aws_vpc" "this" {
-  cidr_block           = var.vpc_cidr_block
-  enable_dns_hostnames = true
+  cidr_block           = var.cidr
   enable_dns_support   = true
+  enable_dns_hostnames = true
 
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-vpc"
-  })
+  tags = {
+    Name = "stockwiz-vpc-${var.environment}"
+  }
 }
 
-resource "aws_internet_gateway" "this" {
-  vpc_id = aws_vpc.this.id
-
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-igw"
-  })
-}
-
+##########################
+# Subnets Públicas
+##########################
 resource "aws_subnet" "public" {
-  count = length(var.public_subnet_cidrs)
-
+  count                   = length(var.public_subnets)
   vpc_id                  = aws_vpc.this.id
-  cidr_block              = var.public_subnet_cidrs[count.index]
-  availability_zone       = var.availability_zones[count.index]
+  cidr_block              = var.public_subnets[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-public-subnet-${count.index + 1}"
+  tags = {
+    Name = "stockwiz-public-${count.index + 1}-${var.environment}"
     Tier = "public"
-  })
+  }
 }
 
+##########################
+# Subnets Privadas
+##########################
 resource "aws_subnet" "private" {
-  count = length(var.private_subnet_cidrs)
-
+  count             = length(var.private_subnets)
   vpc_id            = aws_vpc.this.id
-  cidr_block        = var.private_subnet_cidrs[count.index]
-  availability_zone = var.availability_zones[count.index]
+  cidr_block        = var.private_subnets[count.index]
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
-  map_public_ip_on_launch = false
-
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-private-subnet-${count.index + 1}"
+  tags = {
+    Name = "stockwiz-private-${count.index + 1}-${var.environment}"
     Tier = "private"
-  })
+  }
 }
 
-resource "aws_eip" "nat" {
-  domain = "vpc"
+##########################
+# Internet Gateway
+##########################
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.this.id
 
-  depends_on = [aws_internet_gateway.this]
-
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-nat-eip"
-  })
+  tags = {
+    Name = "stockwiz-igw-${var.environment}"
+  }
 }
 
-resource "aws_nat_gateway" "this" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id  # Se ubica en la 1ª subnet pública
-
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-nat-gateway"
-  })
-}
-
-resource "aws_route_table" "public_route_table" {
+##########################
+# Route Table Pública
+##########################
+resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.this.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-public-route-table"
-  })
+  tags = {
+    Name = "stockwiz-public-rt-${var.environment}"
+  }
 }
 
-resource "aws_route_table_association" "public_associations" {
-  count          = length(aws_subnet.public)
+##########################
+# Asociación Route Table → Subnets Públicas
+##########################
+resource "aws_route_table_association" "public_assoc" {
+  count          = length(var.public_subnets)
   subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public_route_table.id
+  route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table" "private_route_table" {
+# -------------------- NAT Gateway --------------------
+resource "aws_eip" "nat_eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public[0].id
+  depends_on    = [aws_internet_gateway.igw]
+}
+
+# --------------- Private Route Table -----------------
+resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.this.id
+    nat_gateway_id = aws_nat_gateway.nat.id
   }
 
-  tags = merge(local.common_tags, {
-    Name = "stockwiz-${var.environment}-private-route-table"
-  })
+  tags = {
+    Name = "${var.environment}-private-rt"
+  }
 }
 
-resource "aws_route_table_association" "private_associations" {
+# ---- Associate PRIVATE subnets to Private RT --------
+resource "aws_route_table_association" "private_assoc" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private_route_table.id
+  route_table_id = aws_route_table.private.id
 }

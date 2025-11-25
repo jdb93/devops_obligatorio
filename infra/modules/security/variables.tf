@@ -4,6 +4,5 @@ variable "vpc_id" {
 }
 
 variable "environment" {
-  description = "Environment name (dev, staging, prod)"
-  type        = string
+  type = string
 }

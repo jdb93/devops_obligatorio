@@ -1,49 +1,38 @@
-variable "aws_region" {
-  description = "AWS region"
+variable "region" {
+  default = "us-east-1"
+}
+
+variable "profile" {
+  default = "default"
+}
+
+variable "app_name" {
+  description = "Prefijo común para los recursos"
   type        = string
-  default     = "us-east-1"
+  default     = "stockwiz-dev"
+}
+
+variable "account_id" {
+  description = "Tu AWS Account ID (el de AWS Academy)"
+  type        = string
 }
 
 variable "environment" {
-  description = "Environment name"
   type        = string
+  description = "Environment name (dev, staging, prod)"
 }
 
-variable "vpc_cidr_block" {
-  description = "CIDR block for VPC"
+variable "cidr" {
   type        = string
+  description = "VPC CIDR block"
 }
 
-
-variable "public_subnet_cidrs" {
-  description = "CIDR blocks for public subnets"
+variable "public_subnets" {
   type        = list(string)
+  description = "List of public subnet CIDRs"
 }
 
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
+variable "private_subnets" {
   type        = list(string)
-}
-
-variable "instance_count" {
-  description = "Number of EC2 instances"
-  type        = number
-  default     = 2
-}
-
-variable "instance_type" {
-  description = "EC2 instance type"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "availability_zones" {
-  description = "List of availability zones to use"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
-}
-
-variable "tags" {
-  description = "Global tags to apply to resources"
-  type        = map(string)
+  description = "List of private subnet CIDRs"
 }

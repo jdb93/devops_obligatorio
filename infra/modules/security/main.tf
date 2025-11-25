@@ -1,21 +1,41 @@
 ############################################
-# Security Group - API Gateway (Público)
-############################################
-resource "aws_security_group" "api_gateway_sg" {
-  name        = "stockwiz-${var.environment}-api-gateway-sg"
-  description = "SG publico para API Gateway"
-  vpc_id      = var.vpc_id
+# SG del ALB (público)
+#############################################
+resource "aws_security_group" "alb_public" {
+  name   = "alb-public-sg"
+  vpc_id = var.vpc_id
 
-  # Inbound: Permitir HTTP desde Internet
   ingress {
-    description = "HTTP publico"
-    from_port   = 8000
-    to_port     = 8000
+    description = "Allow HTTP from Internet"
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # público
+    cidr_blocks = ["0.0.0.0/0"]  # Internet
   }
 
-  # Outbound: permitido a todos
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow outbound anywhere
+  }
+}
+
+#############################################
+# SG del API Gateway (solo accesible por ALB)
+#############################################
+resource "aws_security_group" "api" {
+  name   = "api-gateway-sg"
+  vpc_id = var.vpc_id
+
+  ingress {
+    description     = "Allow HTTP from ALB"
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -24,24 +44,65 @@ resource "aws_security_group" "api_gateway_sg" {
   }
 }
 
-############################################
-# SG para Servicios Internos (Product / Inventory)
-############################################
-resource "aws_security_group" "internal_services_sg" {
-  name        = "stockwiz-${var.environment}-internal-services-sg"
-  description = "SG para servicios internos (no expuestos)"
-  vpc_id      = var.vpc_id
+#############################################
+# SG de microservicios Product/Inventory
+#############################################
+resource "aws_security_group" "services" {
+  name   = "services-sg"
+  vpc_id = var.vpc_id
 
-  # Inbound desde API Gateway SG
+  # Product Service (8001) - desde API Gateway **y** desde ALB
   ingress {
-    description      = "Permitir acceso desde API Gateway"
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "tcp"
-    security_groups  = [aws_security_group.api_gateway_sg.id]
+    description = "Product service from API Gateway and ALB"
+    from_port   = 8001
+    to_port     = 8001
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.api.id,
+      aws_security_group.alb_public.id
+    ]
   }
 
-  # Outbound permitido a todos
+  # Inventory Service (8002) - desde API Gateway **y** desde ALB
+  ingress {
+    description = "Inventory service from API Gateway and ALB"
+    from_port   = 8002
+    to_port     = 8002
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.api.id,
+      aws_security_group.alb_public.id
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+#############################################
+# SG de base de datos Postgres (solo desde microservicios)
+#############################################
+resource "aws_security_group" "db" {
+  name   = "stockwiz-db-sg-${var.environment}"
+  vpc_id = var.vpc_id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  ingress {
+    description     = "Postgres from ECS services"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.services.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
