@@ -4,7 +4,7 @@ profile    = "default"
 account_id = "339713009539"
 
 # --- App name ---
-app_name = "stockwiz-dev"
+app_name = "stockwiz"
 
 # --- Environment ---
 environment = "dev"
@@ -19,3 +19,9 @@ tags = {
   Environment = "dev"
   Project     = "StockWiz"
 }
+
+# --- DB (dev) ---
+db_name     = "microservices_db"
+db_username     = "stockwizdb"
+db_password = "admin123"
+

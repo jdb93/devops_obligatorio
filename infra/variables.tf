@@ -1,38 +1,54 @@
 variable "region" {
-  default = "us-east-1"
+  type = string
 }
 
 variable "profile" {
+  type    = string
   default = "default"
 }
 
-variable "app_name" {
-  description = "Prefijo común para los recursos"
-  type        = string
-  default     = "stockwiz-dev"
+variable "account_id" {
+  type = string
 }
 
-variable "account_id" {
-  description = "Tu AWS Account ID (el de AWS Academy)"
-  type        = string
+variable "app_name" {
+  type = string
+  # Ej: "stockwiz-dev", "stockwiz-stg", "stockwiz-prod"
 }
 
 variable "environment" {
-  type        = string
-  description = "Environment name (dev, staging, prod)"
+  type = string
+  # Ej: "dev", "stg", "prod"
 }
 
 variable "cidr" {
-  type        = string
-  description = "VPC CIDR block"
+  type = string
 }
 
 variable "public_subnets" {
-  type        = list(string)
-  description = "List of public subnet CIDRs"
+  type = list(string)
 }
 
 variable "private_subnets" {
-  type        = list(string)
-  description = "List of private subnet CIDRs"
+  type = list(string)
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}
+
+# RDS
+variable "db_name" {
+  type = string
+  # Ej: "stockwiz_dev", "stockwiz_stg", "stockwiz_prod"
+}
+
+variable "db_username" {
+  type = string
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
 }

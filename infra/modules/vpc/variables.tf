@@ -11,6 +11,10 @@ variable "private_subnets" {
 }
 
 variable "environment" {
-  type        = string
-  description = "Environment name (dev, staging, prod)"
+  type = string
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
 }
