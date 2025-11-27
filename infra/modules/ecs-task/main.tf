@@ -166,7 +166,7 @@ resource "aws_ecs_task_definition" "stockwiz" {
     },
     {
       name      = "redis"
-      image = "339713009539.dkr.ecr.us-east-1.amazonaws.com/redis:7-alpine"
+      image     = "redis:7-alpine"
       essential = true
       cpu       = 256
       memory    = 512
