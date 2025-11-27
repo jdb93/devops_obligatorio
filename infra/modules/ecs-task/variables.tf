@@ -22,3 +22,8 @@ variable "db_username" {
 variable "ecr_repo_urls" {
   type = map(string)
 }
+
+variable "database_url" {
+  type        = string
+  description = "Full PostgreSQL connection string for services"
+}

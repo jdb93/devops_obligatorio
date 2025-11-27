@@ -22,7 +22,7 @@ tags = {
 
 # --- DB (dev) ---
 db_name     = "microservices_db"
-db_username     = "stockwizdb"
+db_username = "stockwizdb"
 db_password = "admin123"
 
 ecr_repo_urls = {
@@ -32,3 +32,6 @@ ecr_repo_urls = {
   "redis"             = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-redis-dev"
   "postgres"          = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-postgres-dev"
 }
+
+database_url = "postgresql://stockwizdb:admin123@localhost:5432/microservices_db?sslmode=disable"
+

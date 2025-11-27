@@ -56,3 +56,8 @@ variable "db_password" {
 variable "ecr_repo_urls" {
   type = map(string)
 }
+
+variable "database_url" {
+  type = string
+  description = "Connection string for Postgres (used by Lambda init)"
+}

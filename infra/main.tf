@@ -59,17 +59,18 @@ module "alb" {
   app_name          = var.app_name
 }
 
-# --- Task Definition multi-container ---
+
 module "ecs_task" {
-  source        = "./modules/ecs-task"
-  project_name  = var.app_name
-  region        = var.region
-  db_name = var.db_name
-  db_password   = var.db_password
-  db_username   = var.db_username
-  ecr_repo_urls = var.ecr_repo_urls
-  
+  source         = "./modules/ecs-task"
+  project_name   = var.app_name
+  region         = var.region
+  ecr_repo_urls  = var.ecr_repo_urls
+  db_username    = var.db_username
+  db_password    = var.db_password
+  db_name        = var.db_name
+  database_url   = var.database_url
 }
+
 
 # --- ECS Service (1 service, 1 ALB, 1 TaskDefinition con 4 containers) ---
 module "ecs_service" {
