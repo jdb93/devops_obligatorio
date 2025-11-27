@@ -19,10 +19,6 @@ variable "db_username" {
   type = string
 }
 
-variable "rds_endpoint" {
-  type = string
-}
-
 variable "ecr_repo_urls" {
   type = map(string)
 }

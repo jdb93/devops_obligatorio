@@ -25,3 +25,10 @@ db_name     = "microservices_db"
 db_username     = "stockwizdb"
 db_password = "admin123"
 
+ecr_repo_urls = {
+  "api-gateway"       = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-api-gateway-dev"
+  "product-service"   = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-product-service-dev"
+  "inventory-service" = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-inventory-service-dev"
+  "redis"             = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-redis-dev"
+  "postgres"          = "339713009539.dkr.ecr.us-east-1.amazonaws.com/stockwiz-postgres-dev"
+}

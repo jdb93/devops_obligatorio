@@ -52,3 +52,7 @@ variable "db_password" {
   type      = string
   sensitive = true
 }
+
+variable "ecr_repo_urls" {
+  type = map(string)
+}

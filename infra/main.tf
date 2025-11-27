@@ -67,8 +67,8 @@ module "ecs_task" {
   db_name = var.db_name
   db_password   = var.db_password
   db_username   = var.db_username
-  rds_endpoint  = module.rds.endpoint
-  ecr_repo_urls = local.ecr_repo_urls
+  ecr_repo_urls = var.ecr_repo_urls
+  
 }
 
 # --- ECS Service (1 service, 1 ALB, 1 TaskDefinition con 4 containers) ---
