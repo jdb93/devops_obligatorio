@@ -7,9 +7,6 @@ variable "profile" {
   default = "default"
 }
 
-variable "account_id" {
-  type = string
-}
 
 variable "app_name" {
   type = string
