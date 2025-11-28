@@ -24,13 +24,12 @@ FROM alpine:3.18
 
 WORKDIR /app
 
-# Instalar certificados CA para HTTPS
-RUN apk --no-cache add ca-certificates
+# Instalar certificados CA para HTTPS y curl para healthcheck ECS
+RUN apk --no-cache add ca-certificates curl
 
-# Copiar binario compilado
 COPY --from=builder /app/api-gateway .
 
-# Usuario no root para seguridad
+# Usuario no root
 RUN addgroup -g 1000 appuser && \
     adduser -D -u 1000 -G appuser appuser && \
     chown -R appuser:appuser /app
@@ -42,5 +41,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8000/health || exit 1
 
 EXPOSE 8000
-
 CMD ["./api-gateway"]
