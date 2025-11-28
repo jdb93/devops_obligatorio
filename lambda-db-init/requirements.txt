@@ -1,2 +1,0 @@
-pg8000==1.29.8
-typing_extensions

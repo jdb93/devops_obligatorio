@@ -69,6 +69,7 @@ module "ecs_service" {
   service_name     = "${var.app_name}-svc"
   task_def_arn     = module.ecs_task.task_def_arn
   private_subnets  = module.vpc.private_subnets
+  desired_count = var.desired_count
 
   # 🔥 ESTA ES LA ÚNICA PARTE QUE SE CAMBIA:
   security_groups  = [
@@ -88,13 +89,3 @@ module "ecr" {
   environment  = var.environment
   services     = ["api-gateway", "product-service", "inventory-service"]
 }
-
-module "lambda_db_init" {
-  source = "./modules/lambda-db-init"
-
-  bucket_name     = var.bucket_name
-  db_url          = var.db_url
-  private_subnets = module.vpc.private_subnets
-  lambda_sg_id    = module.security.sg_lambda_sql_init
-}
-

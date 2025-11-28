@@ -62,5 +62,15 @@ variable "database_url" {
   description = "Connection string for Postgres (used by Lambda init)"
 }
 
+variable "desired_count" {
+  type = number
+  default = 1
+}
+
 variable "bucket_name" {}
 variable "db_url" {}
+
+variable "account_id" {
+  description = "AWS Account ID"
+  type        = string
+}

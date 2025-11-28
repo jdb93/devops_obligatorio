@@ -30,3 +30,7 @@ variable "container_port" {
   type = number
 }
 
+variable "desired_count" {
+  type    = number
+  default = 1
+}
