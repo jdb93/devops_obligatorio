@@ -231,7 +231,12 @@ healthCheck = {
         { name = "POSTGRES_DB",       value = var.db_name }
       ]
 
-      command = ["postgres"]
+      command = [
+  "postgres",
+  "-c", "listen_addresses=*",
+  "-c", "max_connections=100"
+]
+
 
       logConfiguration = {
         logDriver = "awslogs"

@@ -65,8 +65,7 @@ resource "aws_security_group" "db" {
 resource "aws_security_group" "lambda_sql_init" {
   name        = "lambda-sql-init-sg"
   description = "Security Group for Lambda to initialize PostgreSQL"
-  vpc_id = var.vpc_id
-
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0
@@ -80,11 +79,16 @@ resource "aws_security_group" "lambda_sql_init" {
   }
 }
 
-resource "aws_security_group_rule" "lambda_to_db" {
+# 🟢 REGLA CORRECTA: Lambda → Postgres (vía SG del ECS)
+resource "aws_security_group_rule" "lambda_to_postgres" {
   type                     = "ingress"
   from_port                = 5432
   to_port                  = 5432
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.db.id         # EXISTENTE en este módulo
+
+  security_group_id        = aws_security_group.db.id         # ← CORRECTO
   source_security_group_id = aws_security_group.lambda_sql_init.id
 }
+
+
+

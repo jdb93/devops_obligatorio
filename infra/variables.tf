@@ -61,3 +61,6 @@ variable "database_url" {
   type = string
   description = "Connection string for Postgres (used by Lambda init)"
 }
+
+variable "bucket_name" {}
+variable "db_url" {}

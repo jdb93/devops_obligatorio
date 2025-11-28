@@ -40,16 +40,6 @@ module "ecs_cluster" {
   cluster_name = var.app_name
 }
 
-# --- RDS Postgres ---
-module "rds" {
-  source                 = "./modules/rds"
-  db_name                = var.db_name
-  db_username            = var.db_username
-  db_password            = var.db_password
-  private_subnet_ids     = module.vpc.private_subnets
-  vpc_security_group_ids = [module.security.sg_db]
-}
-
 # --- ALB público apuntando al API Gateway ---
 module "alb" {
   source           = "./modules/alb"
@@ -79,11 +69,18 @@ module "ecs_service" {
   service_name     = "${var.app_name}-svc"
   task_def_arn     = module.ecs_task.task_def_arn
   private_subnets  = module.vpc.private_subnets
-  security_groups  = [module.security.sg_ecs]
+
+  # 🔥 ESTA ES LA ÚNICA PARTE QUE SE CAMBIA:
+  security_groups  = [
+    module.security.sg_ecs,
+    module.security.sg_db
+  ]
+
   target_group_arn = module.alb.target_group_arn
   container_name   = "api-gateway"
   container_port   = 8000
 }
+
 
 module "ecr" {
   source       = "./modules/ecr"
@@ -91,3 +88,13 @@ module "ecr" {
   environment  = var.environment
   services     = ["api-gateway", "product-service", "inventory-service"]
 }
+
+module "lambda_db_init" {
+  source = "./modules/lambda-db-init"
+
+  bucket_name     = var.bucket_name
+  db_url          = var.db_url
+  private_subnets = module.vpc.private_subnets
+  lambda_sg_id    = module.security.sg_lambda_sql_init
+}
+
