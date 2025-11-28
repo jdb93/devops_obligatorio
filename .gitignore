@@ -11,3 +11,4 @@ crash.log
 api-gateway.log
 inventory-service.log
 product-service.log
+lambda_response.json
