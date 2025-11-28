@@ -82,10 +82,17 @@ module "ecs_service" {
   container_port   = 8000
 }
 
-
 module "ecr" {
   source       = "./modules/ecr"
   app_name     = var.app_name
   environment  = var.environment
   services     = ["api-gateway", "product-service", "inventory-service"]
 }
+
+module "lambda_healthcheck" {
+  source       = "./modules/lambda-healthcheck"
+  app_name     = var.app_name
+  environment  = var.environment
+  alb_dns_name = module.alb.dns_name
+}
+
