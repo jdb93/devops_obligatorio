@@ -7,7 +7,6 @@ variable "profile" {
   default = "default"
 }
 
-
 variable "app_name" {
   type = string
   # Ej: "stockwiz-dev", "stockwiz-stg", "stockwiz-prod"

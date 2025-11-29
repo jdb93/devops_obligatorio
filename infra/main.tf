@@ -96,3 +96,16 @@ module "lambda_healthcheck" {
   alb_dns_name = module.alb.dns_name
 }
 
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  aws_region = var.region
+  app_name   = var.app_name
+  environment = var.environment
+
+  ecs_cluster_name = module.ecs_cluster.cluster_name
+  ecs_service_name = "${var.app_name}-svc"
+
+  alb_arn_suffix           = module.alb.arn_suffix
+  target_group_arn_suffix  = module.alb.target_group_arn_suffix
+}

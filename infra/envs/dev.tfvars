@@ -35,6 +35,5 @@ ecr_repo_urls = {
 
 database_url = "postgresql://stockwizdb:admin123@localhost:5432/microservices_db?sslmode=disable"
 bucket_name = "180358-stockwiz-backend"
-# esto era: db_url      = "postgresql://stockwizdb:admin123@stockwiz-postgres:5432/microservices_db?sslmode=disable"
 db_url = "postgresql://stockwizdb:admin123@10.0.4.237:5432/microservices_db"
 desired_count = 1

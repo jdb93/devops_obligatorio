@@ -10,10 +10,10 @@ set -o pipefail
 REGION="us-east-1"
 ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
 
-ENV="dev"
+ENV="dev" # pasar como parametro y cambiar nombre del file
 
-CLUSTER_NAME="stockwiz"
-SERVICE_NAME="stockwiz-svc"
+CLUSTER_NAME="stockwiz" # Esto deberia ser stockwiz-ENV
+SERVICE_NAME="stockwiz-svc" # Esto deberia ser stockwiz-svc-ENV
 
 # Imagenes (mismo naming que ECR)
 API_IMAGE="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/stockwiz-api-gateway-$ENV:latest"
