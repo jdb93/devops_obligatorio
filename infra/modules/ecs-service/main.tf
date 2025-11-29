@@ -8,7 +8,7 @@ resource "aws_ecs_service" "this" {
 
   network_configuration {
     subnets         = var.private_subnets
-    security_groups = var.security_groups  # ← SOLO ESTO
+    security_groups = var.security_groups 
   }
 
   load_balancer {

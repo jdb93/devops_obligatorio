@@ -1,5 +1,5 @@
 resource "aws_lb" "this" {
-  name               = "${var.app_name}-alb"
+  name               = "${var.app_name}-alb-${var.environment}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.security_group_id]
@@ -7,7 +7,7 @@ resource "aws_lb" "this" {
 }
 
 resource "aws_lb_target_group" "api_tg" {
-  name     = "${var.app_name}-api-tg"
+  name     = "${var.app_name}-api-tg-${var.environment}"
   port     = 8000
   protocol = "HTTP"
   vpc_id   = var.vpc_id
