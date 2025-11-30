@@ -1,12 +1,6 @@
 variable "region" {
   type = string
 }
-
-variable "profile" {
-  type    = string
-  default = "default"
-}
-
 variable "app_name" {
   type = string
   # Ej: "stockwiz-dev", "stockwiz-stg", "stockwiz-prod"

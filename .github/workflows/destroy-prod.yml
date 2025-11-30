@@ -1,0 +1,51 @@
+name: Destruir AWS infra en prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Escribe "destroy" para confirmar'
+        required: true
+        type: string
+
+env:
+  AWS_REGION: us-east-1
+  
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Validar confirmacion
+      run: |
+        if [ "${{ github.event.inputs.confirm_destroy }}" != "destroy" ]; then
+          echo "Destruction cancelled. You must type 'destroy' to confirm."
+          exit 1
+        fi
+        echo "Confirmación recibida. Procediendo con la destrucción de la infraestructura..."
+
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Login a AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup de Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      working-directory: ./infra
+      run: terraform init
+
+    - name: Terraform Destroy
+      working-directory: ./infra
+      run: terraform destroy -var-file="envs/prod.tfvars" -auto-approve
+
+    - name: Cleanup Complete
+      run: |
+        echo "Prod destruido con exito!"

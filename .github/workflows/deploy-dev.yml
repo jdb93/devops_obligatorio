@@ -1,12 +1,9 @@
 name: Despliegue de dev a AWS
 
 on:
-  pull_request:
-    branches: [develop]
-    types: [opened, synchronize, reopened]
   push:
     branches: [develop]
-  workflow_dispatch: 
+  workflow_dispatch: {}
 
 env:
   AWS_REGION: us-east-1
