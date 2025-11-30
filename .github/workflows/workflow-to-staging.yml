@@ -1,0 +1,23 @@
+name: Workflow for merging develop to staging
+
+on:
+  pull_request:
+    branches: [staging]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  banner:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PR to STAGING"
+
+  sonar:
+    uses: ./.github/workflows/sonar.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  postman-tests:
+    uses: ./.github/workflows/postman-tests.yml
+    with:
+      collection_path: postman/StockWiz.postman_collection.json
+      environment_path: postman/StockWiz.postman_environment.json
