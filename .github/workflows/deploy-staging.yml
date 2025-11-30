@@ -1,19 +1,16 @@
-name: Despliegue de dev a AWS
+name: Despliegue de staging a AWS
 
 on:
-  pull_request:
-    branches: [develop]
-    types: [opened, synchronize, reopened]
   push:
-    branches: [develop]
-  workflow_dispatch: 
+    branches: [staging]
+  workflow_dispatch: {}
 
 env:
   AWS_REGION: us-east-1
-  ENV: dev
+  ENV: staging
 
 jobs:
-  deploy-dev:
+  deploy-staging:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,16 +33,16 @@ jobs:
         run: |
           terraform init -reconfigure \
             -backend-config="bucket=180358-stockwiz-backend" \
-            -backend-config="key=dev/terraform.tfstate" \
+            -backend-config="key=staging/terraform.tfstate" \
             -backend-config="region=us-east-1"
 
       - name: Terraform Plan
         working-directory: infra
-        run: terraform plan -var-file="envs/dev.tfvars"
+        run: terraform plan -var-file="envs/staging.tfvars"
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply -var-file="envs/dev.tfvars" -auto-approve
+        run: terraform apply -var-file="envs/staging.tfvars" -auto-approve
       
       - name: Login a ECR
         run: |
@@ -56,7 +53,7 @@ jobs:
       - name: Pushear imagenes y reiniciar servicio
         run: |
           chmod +x deploy.sh
-          ./deploy.sh dev
+          ./deploy.sh staging
 
       - name: Fin
-        run: echo "DEV desplegado con exito!"
+        run: echo "STAGING desplegado con exito!"
