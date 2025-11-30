@@ -10,7 +10,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ENV: dev
 
 jobs:
   deploy-dev:

@@ -1,6 +1,5 @@
 # --- AWS Settings ---
 region     = "us-east-1"
-profile    = "default"
 
 # --- App name ---
 app_name = "stockwiz"
