@@ -9,31 +9,31 @@ data "aws_iam_role" "lab_role" {
 # CLOUDWATCH LOG GROUPS (1 POR CONTENEDOR)
 #############################################
 resource "aws_cloudwatch_log_group" "api" {
-  name              = "/ecs/api-gateway"
+  name              = "/ecs/api-gateway-${var.environment}"
   retention_in_days = 7
   lifecycle { ignore_changes = [name] }
 }
 
 resource "aws_cloudwatch_log_group" "product" {
-  name              = "/ecs/product-service"
+  name              = "/ecs/product-service-${var.environment}"
   retention_in_days = 7
   lifecycle { ignore_changes = [name] }
 }
 
 resource "aws_cloudwatch_log_group" "inventory" {
-  name              = "/ecs/inventory-service"
+  name              = "/ecs/inventory-service-${var.environment}"
   retention_in_days = 7
   lifecycle { ignore_changes = [name] }
 }
 
 resource "aws_cloudwatch_log_group" "redis" {
-  name              = "/ecs/redis"
+  name              = "/ecs/redis-${var.environment}"
   retention_in_days = 7
   lifecycle { ignore_changes = [name] }
 }
 
 resource "aws_cloudwatch_log_group" "postgres" {
-  name              = "/ecs/postgres"
+  name              = "/ecs/postgres-${var.environment}"
   retention_in_days = 7
   lifecycle { ignore_changes = [name] }
 }
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "stockwiz" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/api-gateway"
+          awslogs-group         = "/ecs/api-gateway-${var.environment}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
@@ -119,7 +119,7 @@ resource "aws_ecs_task_definition" "stockwiz" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/product-service"
+          awslogs-group         = "/ecs/product-service-${var.environment}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
@@ -164,7 +164,7 @@ healthCheck = {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/inventory-service"
+          awslogs-group         = "/ecs/inventory-service-${var.environment}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
@@ -200,7 +200,7 @@ healthCheck = {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/redis"
+          awslogs-group         = "/ecs/redis-${var.environment}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
@@ -241,7 +241,7 @@ healthCheck = {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/postgres"
+          awslogs-group         = "/ecs/postgres-${var.environment}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
