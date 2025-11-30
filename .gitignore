@@ -1,0 +1,14 @@
+# Local .terraform directories
+**/.terraform/
+*.tfplan
+*.tfstate
+*.tfstate.*
+crash.log
+# Archivos específicos de macOS
+.DS_Store
+**/.DS_Store
+
+api-gateway.log
+inventory-service.log
+product-service.log
+lambda_response.json
