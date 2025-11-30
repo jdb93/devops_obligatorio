@@ -1,12 +1,6 @@
 variable "region" {
   type = string
 }
-
-variable "profile" {
-  type    = string
-  default = "default"
-}
-
 variable "app_name" {
   type = string
   # Ej: "stockwiz-dev", "stockwiz-stg", "stockwiz-prod"
@@ -49,24 +43,21 @@ variable "db_password" {
   sensitive = true
 }
 
-variable "ecr_repo_urls" {
-  type = map(string)
-}
-
-variable "database_url" {
-  type = string
-  description = "Connection string for Postgres (used by Lambda init)"
-}
-
 variable "desired_count" {
   type = number
   default = 1
 }
 
 variable "bucket_name" {}
-variable "db_url" {}
+# variable "db_url" {}
 
+/*
 variable "account_id" {
   description = "AWS Account ID"
   type        = string
+}
+*/
+
+variable "database_url" {
+  type = string
 }
