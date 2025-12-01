@@ -39,11 +39,11 @@ jobs:
       uses: hashicorp/setup-terraform@v3
 
     - name: Terraform Init
-      working-directory: ./infra
+      working-directory: infra
       run: terraform init
 
     - name: Terraform Destroy
-      working-directory: ./infra
+      working-directory: infra
       run: terraform destroy -var-file="envs/staging.tfvars" -auto-approve
 
     - name: Cleanup Complete
