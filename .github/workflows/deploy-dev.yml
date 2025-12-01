@@ -1,7 +1,15 @@
 name: Despliegue de dev a AWS
 
 on:
-  workflow_dispatch: {}
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
@@ -47,10 +55,10 @@ jobs:
             | docker login --username AWS --password-stdin \
               "$(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.$AWS_REGION.amazonaws.com"
 
-      - name: Pushear imagenes y reiniciar servicio
+      - name: Push de imágenes y restart del servicio ECS
         run: |
           chmod +x deploy.sh
           ./deploy.sh dev
 
       - name: Fin
-        run: echo "DEV desplegado con exito!"
+        run: echo "DEV desplegado con éxito!"

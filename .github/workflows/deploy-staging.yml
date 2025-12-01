@@ -1,7 +1,15 @@
 name: Despliegue de staging a AWS
 
 on:
-  workflow_dispatch: {}
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
