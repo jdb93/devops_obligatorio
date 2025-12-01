@@ -27,3 +27,7 @@ variable "database_url" {
   type        = string
   description = "Full PostgreSQL connection string for services"
 }
+
+variable "environment" {
+  type = string
+}

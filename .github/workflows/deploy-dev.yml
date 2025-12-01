@@ -1,8 +1,6 @@
 name: Despliegue de dev a AWS
 
 on:
-  push:
-    branches: [develop]
   workflow_dispatch: {}
 
 env:
