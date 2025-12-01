@@ -126,6 +126,7 @@ Luego de ello, se ejecuta el mismo flujo que en el despliegue manual.
 En caso de querer destruir el ambiente creado, repetir el proceso, pero en el paso 4 seleccionar el que corresponda:
 
 # Destruir ambiente via GitHub Actions
+Ejecutar alguno de los siguientes flujos en Github Actions:
 -Destruir AWS infra en dev
 -Destruir AWS infra en staging
 -Destruir AWS infra en prod
