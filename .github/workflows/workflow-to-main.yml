@@ -21,8 +21,3 @@ jobs:
     with:
       collection_path: postman/StockWiz.postman_collection.json
       environment_path: postman/StockWiz.postman_environment.json
-
-# Jobs to add:
-# build (para confirmar integridad)
-# install aws cli
-# deploy con terraform
