@@ -50,6 +50,7 @@ module "ecs_task" {
   db_password    = var.db_password
   db_name        = var.db_name
   database_url   = var.database_url
+  environment   = var.environment
 }
 
 
